@@ -1,18 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CreatePollComponent from './components/CreatePollComponent';
 import VoteComponent from './components/VoteComponent';  // Import the VoteComponent
 import './App.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Tabs from './components/Tabs';
 
 function App() {
+
+    const [activeItem, setActiveItem] = useState('Profile');
+    const items = ['Profile', 'Polls'];
+
+    const handleTabChange = (item) => {
+        setActiveItem(item);
+    }
+
+    const renderComponent = () => {
+        switch (activeItem) {
+            case 'Profile':
+                return null; // Here return Profile when that exists. Then we can have the login forms appear if not logged in.
+            case 'Polls':
+                return <CreatePollComponent/> // Here return poll list, and creat poll can be a modal within that.
+            default:
+                return null;
+        }
+    }
+
     return (
         <div className="App">
-            <h1>Welcome to the Poll App</h1>
+            <Header headerText="Welcome to the Poll App" />
 
-            {/* Display the CreatePollComponent */}
-            <CreatePollComponent />
+            <Tabs items={items} activeItem={activeItem} onTabChange={handleTabChange} />
 
-            {/* Display the VoteComponent */}
-            <VoteComponent />
+            {renderComponent()}
+
+            <Footer footerText="Copyright © 2024 - Mikael Færøvik / Carla Miquel Blasco / Phillip Brat" />
         </div>
     );
 }
