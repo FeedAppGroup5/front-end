@@ -5,11 +5,12 @@ import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Tabs from './components/Tabs';
+import AuthForm from './components/AuthForm';
 
 function App() {
 
     const [activeItem, setActiveItem] = useState('Profile');
-    const items = ['Profile', 'Polls'];
+    const items = ['Profile', 'Polls', 'Auth'];
 
     const handleTabChange = (item) => {
         setActiveItem(item);
@@ -21,6 +22,9 @@ function App() {
                 return null; // Here return Profile when that exists. Then we can have the login forms appear if not logged in.
             case 'Polls':
                 return <CreatePollComponent/> // Here return poll list, and creat poll can be a modal within that.
+            case 'Auth':
+                return <AuthForm/>
+
             default:
                 return null;
         }

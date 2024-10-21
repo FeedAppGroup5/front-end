@@ -1,0 +1,33 @@
+/* Container for the entire auth form */
+.auth-form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Toggle text (e.g., "Already have an account? Log In") */
+.toggle-text {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+/* Toggle button to switch between login and registration */
+.toggle-button {
+    background: none;
+    border: none;
+    color: #f69eca;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration: underline;
+}
+
+/* Hover effect for the toggle button */
+.toggle-button:hover {
+    color: #e056a7;
+}
