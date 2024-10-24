@@ -12,11 +12,14 @@ ul{
 li{
     margin: 0 10px;
     font-size: 20px;
-    color: #c0cfb2;
+    color: grey;
     cursor: pointer;
+    background:  #fdeff5;
+    border: 2px solid #f69eca;
+    max-width: 80px;
 }
 .active{
-    color: #44624a;
-    border-bottom: 2px solid #44624a;
+    color: black;
+    border-bottom: 2px solid black;
     padding-bottom: 8px;
 }
