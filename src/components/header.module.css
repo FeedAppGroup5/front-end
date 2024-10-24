@@ -1,0 +1,11 @@
+
+header {
+    background: #fdeff5;
+    padding: 50px;
+}
+.mainHeader {
+    font-size: 80px;
+    margin: 0;
+    text-align: center;
+    color: black;
+}
