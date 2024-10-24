@@ -21,7 +21,8 @@ function App() {
             case 'Profile':
                 return null; // Here return Profile when that exists. Then we can have the login forms appear if not logged in.
             case 'Polls':
-                return <CreatePollComponent/> // Here return poll list, and creat poll can be a modal within that.
+                return <><CreatePollComponent/> <VoteComponent/></> // Here return poll list, and creat poll can be a modal within that.
+
             case 'Auth':
                 return <AuthForm/>
 

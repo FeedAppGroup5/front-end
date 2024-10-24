@@ -33,9 +33,10 @@ function LoginForm() {
         // Try to handle the login process (sending data to the server)
         try {
             // Send a POST request to the login API endpoint
-            const response = await fetch('http://localhost:8080/login', {
+            const response = await fetch('http://localhost:8000/api/v1/token', {
                 method: 'POST',
                 headers: {
+                    'X-Apikey': `7d7a7ffb-d503-41f0-ab8c-fd3d1e2b8423`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData) // Send the form data as JSON
@@ -44,7 +45,8 @@ function LoginForm() {
             // Check if the response is successful
             if (response.ok) {
                 const data = await response.json();
-                alert(`Login successful! Welcome back, ${data.username}`);
+                localStorage.setItem('token', data.token); // Ensure the token is stored
+                alert(`Login successful! Welcome back, ${data.response.token}`);
             } else {
                 // If the login fails, set an error message
                 setErrorMessage('Invalid email or password. Please try again.');

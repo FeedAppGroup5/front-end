@@ -7,6 +7,11 @@ function AuthForm() {
     // State to track whether we are showing the registration or login form. As default is the registering (true)
     const [isRegistering, setIsRegistering] = useState(true);
 
+    // Function to switch to the login form after successful registration
+    const handleRegistrationSuccess = () => {
+        setIsRegistering(false); // Switch to login form
+    };
+
     // Toggle between registration and login forms
     const toggleForm = () => {
         setIsRegistering(!isRegistering);
@@ -16,7 +21,7 @@ function AuthForm() {
         <div className="auth-form-container">
             {isRegistering ? (
                 <>
-                    <RegisterUserForm />
+                    <RegisterUserForm onRegistrationSuccess={handleRegistrationSuccess} />
                     <p className="toggle-text">
                         Already have an account?
                         <button className="toggle-button" onClick={toggleForm}>

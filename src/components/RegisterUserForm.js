@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; // Importing React and the useState hook from React. to manage state in a functional component.
 import './RegisterUserForm.css';
 
-function RegisterUserForm() {
+function RegisterUserForm({ onRegistrationSuccess }) {
 
     // Define a state variable 'formData' to hold the values of the form fields (username, email, password).
     // 'setFormData' to update this state.
@@ -40,9 +40,10 @@ function RegisterUserForm() {
         // Try to handle the registration process (sending data to the server).
         try {
             // Send a POST request to the registration API endpoint.
-            const response = await fetch('http://localhost:8080/register', {
+            const response = await fetch('http://localhost:8000/api/v1/users', {
                 method: 'POST', // HTTP method is POST to submit new data.
                 headers: {
+                    'X-Apikey': `7d7a7ffb-d503-41f0-ab8c-fd3d1e2b8423`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData) // Convert the formData object to a JSON string and include it in the request body.
@@ -51,7 +52,9 @@ function RegisterUserForm() {
             // Check if the request was successful (status code 200-299).
             if (response.ok) {
                 const data = await response.json(); // Parse the response body as JSON.
-                alert(`Registration successful! Welcome, ${data.username}`); // Display an alert to the user with their username.
+                alert(`Registration successful! Welcome, ${data.response.username}`); // Display an alert to the user with their username.
+                onRegistrationSuccess(); // Call the success callback
+                setFormData({ username: '', email: '', password: '' }); // Clear form
             } else {
                 // If the response is not OK (e.g., error status), show an error message.
                 setErrorMessage('Failed to register. Try again.');
