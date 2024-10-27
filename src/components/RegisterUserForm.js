@@ -1,5 +1,6 @@
 import React, { useState } from 'react'; // Importing React and the useState hook from React. to manage state in a functional component.
 import './RegisterUserForm.css';
+import { API_KEY } from '../config'
 
 function RegisterUserForm({ onRegistrationSuccess }) {
 
@@ -43,7 +44,8 @@ function RegisterUserForm({ onRegistrationSuccess }) {
             const response = await fetch('http://localhost:8000/api/v1/users', {
                 method: 'POST', // HTTP method is POST to submit new data.
                 headers: {
-                    'X-Apikey': `7d7a7ffb-d503-41f0-ab8c-fd3d1e2b8423`,
+                    //'X-Apikey': `7d7a7ffb-d503-41f0-ab8c-fd3d1e2b8423`
+                    'X-Apikey': API_KEY,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData) // Convert the formData object to a JSON string and include it in the request body.

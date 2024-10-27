@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './LoginForm.css'; // Import the CSS file for styling
+import { API_KEY } from '../config'
 
 function LoginForm() {
     // State to store the form data (email and password)
@@ -36,7 +37,7 @@ function LoginForm() {
             const response = await fetch('http://localhost:8000/api/v1/token', {
                 method: 'POST',
                 headers: {
-                    'X-Apikey': `7d7a7ffb-d503-41f0-ab8c-fd3d1e2b8423`,
+                    'X-Apikey': API_KEY,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData) // Send the form data as JSON
