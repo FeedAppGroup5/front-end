@@ -44,7 +44,6 @@ function RegisterUserForm({ onRegistrationSuccess }) {
             const response = await fetch('http://localhost:8000/api/v1/users', {
                 method: 'POST', // HTTP method is POST to submit new data.
                 headers: {
-                    //'X-Apikey': `7d7a7ffb-d503-41f0-ab8c-fd3d1e2b8423`
                     'X-Apikey': API_KEY,
                     'Content-Type': 'application/json',
                 },
