@@ -1,59 +1,69 @@
+// src/components/LoginForm.js
 import React, { useState } from 'react';
 import './LoginForm.css'; // Import the CSS file for styling
-import { API_KEY } from '../config'
+import { API_KEY } from '../config';
 
-function LoginForm() {
-    // State to store the form data (email and password)
+function LoginForm({ onLoginSuccess }) {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
 
-    // State to store error messages if the login fails
     const [errorMessage, setErrorMessage] = useState('');
 
-    // Function to handle input changes in the form fields
     const handleInputChange = (e) => {
-        const { name, value } = e.target; // Get the name and value of the input
+        const { name, value } = e.target;
         setFormData({
-            ...formData, // Spread the existing formData
-            [name]: value // Update the field with the new value
+            ...formData,
+            [name]: value
         });
     };
 
-    // Function to handle form submission
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent the default form submission (which reloads the page and sends data to back-end)
+        e.preventDefault();
 
-        // Validate that both email and password fields are filled
         if (!formData.email || !formData.password) {
             setErrorMessage('Please fill in both email and password.');
             return;
         }
 
-        // Try to handle the login process (sending data to the server)
         try {
-            // Send a POST request to the login API endpoint
             const response = await fetch('http://localhost:8000/api/v1/token', {
                 method: 'POST',
                 headers: {
                     'X-Apikey': API_KEY,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData) // Send the form data as JSON
+                body: JSON.stringify(formData)
             });
 
-            // Check if the response is successful
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('token', data.token); // Ensure the token is stored
-                alert(`Login successful! Welcome back, ${data.response.token}`);
+                const token = data.response.token;
+
+                // Store the token in local storage
+                localStorage.setItem('token', token);
+
+                const userResponse = await fetch(`http://localhost:8000/api/v1/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Apikey': API_KEY,
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    localStorage.setItem('username', userData.response.username);
+                    localStorage.setItem('email', userData.response.email);
+                    alert(`Login successful! Welcome back, ${localStorage.getItem('username')}`);
+                    onLoginSuccess();
+                }
             } else {
-                // If the login fails, set an error message
                 setErrorMessage('Invalid email or password. Please try again.');
             }
         } catch (error) {
-            // Catch and handle any errors during the login process
             setErrorMessage('Error occurred while logging in. Please try again later.');
         }
     };
@@ -62,7 +72,6 @@ function LoginForm() {
         <div className="login-container">
             <h2>Login</h2>
             <form className="login-form" onSubmit={handleSubmit}>
-                {/* Email Input */}
                 <div className="form-group">
                     <label htmlFor="email">Email:</label>
                     <input
@@ -74,8 +83,6 @@ function LoginForm() {
                         placeholder="Enter your email"
                     />
                 </div>
-
-                {/* Password Input */}
                 <div className="form-group">
                     <label htmlFor="password">Password:</label>
                     <input
@@ -87,11 +94,7 @@ function LoginForm() {
                         placeholder="Enter your password"
                     />
                 </div>
-
-                {/* Display an error message if there's a login error */}
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-                {/* Submit Button */}
                 <div className="form-group">
                     <button type="submit" className="login-btn">Login</button>
                 </div>
