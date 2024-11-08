@@ -57,6 +57,7 @@ function LoginForm({ onLoginSuccess }) {
                     const userData = await userResponse.json();
                     localStorage.setItem('username', userData.response.username);
                     localStorage.setItem('email', userData.response.email);
+                    localStorage.setItem('user_id', userData.response.id);
                     alert(`Login successful! Welcome back, ${localStorage.getItem('username')}`);
                     onLoginSuccess();
                 }

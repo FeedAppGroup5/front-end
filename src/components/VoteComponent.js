@@ -1,22 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import './VoteComponent.css';
+import { API_KEY } from "../config";
 
 function VoteComponent() {
     const [polls, setPolls] = useState([]);
-    const [selectedPollId, setSelectedPollId] = useState(null);
+    const [selectedPollId, setSelectedPollId] = useState(''); // Start with an empty string
     const [selectedPoll, setSelectedPoll] = useState(null);
 
-    // Fetch all polls when component mounts
     useEffect(() => {
         fetchAllPolls();
     }, []);
 
     const fetchAllPolls = async () => {
+        const token = localStorage.getItem('token'); // Retrieve the token
+
+        if (!token) {
+            alert('User is not authenticated. Please log in.');
+            return;
+        }
+
+
         try {
-            const response = await fetch('http://localhost:8080/polls');
+            const response = await fetch('http://localhost:8000/api/v1/polls', {
+                method: 'GET',
+                headers: {
+                    'X-Apikey': API_KEY,
+                }
+            });
             if (response.ok) {
-                const polls = await response.json();
-                setPolls(polls);
+                const pollsData = await response.json();
+                setPolls(pollsData.items); // Adjust based on the API structure
+                setSelectedPollId(''); // Reset selected poll ID when fetching polls
             } else {
                 console.error('Failed to fetch polls:', response.statusText);
             }
@@ -26,11 +40,19 @@ function VoteComponent() {
     };
 
     const fetchSelectedPoll = async (pollId) => {
+        const token = localStorage.getItem('token'); // Retrieve the token
+
         try {
-            const response = await fetch(`http://localhost:8080/polls/${pollId}`);
+            const response = await fetch(`http://localhost:8000/api/v1/polls/${pollId}`, {
+                method: 'GET',
+                headers: {
+                    'X-Apikey': API_KEY,
+                    'Authorization': `Bearer ${token}`, // Only logged is users can vote
+                }
+            });
             if (response.ok) {
-                const poll = await response.json();
-                setSelectedPoll(poll);
+                const pollData = await response.json();
+                setSelectedPoll(pollData.response); //
             } else {
                 console.error('Failed to fetch poll:', response.statusText);
             }
@@ -39,28 +61,28 @@ function VoteComponent() {
         }
     };
 
-    const upvote = async (option) => {
+    const upvote = async (optionId) => {
+        const token = localStorage.getItem('token'); // Retrieve the token
         const voteData = {
-            voteOption: {
-                caption: option.caption,
-                presentationOrder: option.presentationOrder,
-                upvote: option.upvote
-            },
-            publishedAt: new Date().toISOString()
+            vote_option_id: optionId // Sending the ID of the option to vote
         };
 
         try {
-            const response = await fetch(`http://localhost:8080/votes/${selectedPoll.pollId}`, {
+            const response = await fetch(`http://localhost:8000/api/v1/polls/${selectedPollId}/vote`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Apikey': API_KEY,
+                    'Authorization': `Bearer ${token}`, // Only logged in uses can vote
                 },
                 body: JSON.stringify(voteData)
             });
 
             if (response.ok) {
-                option.upvote += 1;
-                alert(`Vote cast successfully! There are now ${option.upvote} votes for ${option.caption}.`);
+                const voteResponse = await response.json();
+                alert(`Vote cast successfully for ${voteResponse.response.vote_option.content}!`);
+                // Optionally, refresh the poll details to show updated vote counts
+                fetchSelectedPoll(selectedPollId);
             } else {
                 console.error('Failed to cast vote:', response.statusText);
             }
@@ -82,25 +104,22 @@ function VoteComponent() {
                         fetchSelectedPoll(e.target.value);
                     }}
                 >
-                    <option value="" disabled>Select Poll</option>
+                    <option value="" disabled>Select a poll</option> {/* Default option */}
                     {polls.map(poll => (
-                        <option key={poll.pollId} value={poll.pollId}>{poll.question}</option>
+                        <option key={poll.id} value={poll.id}>{poll.question}</option> // Poll question as option
                     ))}
                 </select>
             </div>
 
             {selectedPoll && (
                 <>
-                    <h3>Poll id: {selectedPoll.pollId}</h3>
-                    <blockquote>{selectedPoll.question}</blockquote>
+                    <h3>Poll: {selectedPoll.question}</h3>
                     <ul>
-                        {selectedPoll.voteOptions.map((option, index) => (
-                            <li key={index}>
-                                <div className="option">{option.caption}</div>
-                                <div className="buttons">
-                                    <button className="upvote" onClick={() => upvote(option)}>vote</button>
-                                </div>
-                                <span>{option.upvote} Votes</span>
+                        {selectedPoll.vote_options.map((option) => (
+                            <li key={option.id}>
+                                {option.content}
+                                <button onClick={() => upvote(option.id)}>Vote</button>
+                                <span>{option.votes_count} Votes</span>
                             </li>
                         ))}
                     </ul>

@@ -1,43 +1,56 @@
 import React, { useState } from 'react';
 import './CreatePollComponent.css';
+import { API_KEY } from "../config";
 
 function CreatePollComponent() {
     const [pollQuestion, setPollQuestion] = useState('');
-    const [pollOptions, setPollOptions] = useState([{ caption: '' }]);
+    const [pollOptions, setPollOptions] = useState([{ content: '' }]);
+    const [validTo, setValidTo] = useState(''); // State for valid_to date
 
-    // Function to add a new option
     const addOption = () => {
-        setPollOptions([...pollOptions, { caption: '' }]);
+        setPollOptions([...pollOptions, { content: '' }]);
     };
 
-    // Function to remove an option
     const removeOption = (index) => {
         setPollOptions(pollOptions.filter((_, i) => i !== index));
     };
 
-    // Function to handle poll submission
     const submitPoll = async () => {
+        const userId = localStorage.getItem('user_id'); // Retrieve user ID from local storage
+        const token = localStorage.getItem('token'); // Retrieve the token
+
+        if (!token) {
+            alert('User is not authenticated. Please log in.');
+            return; // Exit if no token
+        }
+
         const pollData = {
             question: pollQuestion,
-            voteOptions: pollOptions.map((option, index) => ({
-                caption: option.caption,
-                presentationOrder: index + 1,
-                upvote: 0
+            valid_to: validTo, // Use the date selected by the user
+            user_id: userId,
+            vote_options: pollOptions.map((option, index) => ({
+                content: option.content,
+                position: index + 1,
             }))
         };
 
         try {
-            const response = await fetch('http://localhost:8080/polls', {
+            const response = await fetch('http://localhost:8000/api/v1/polls', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Apikey': API_KEY,
+                    'Authorization': `Bearer ${token}`, // Include token for authorization
                 },
                 body: JSON.stringify(pollData)
             });
 
             if (response.ok) {
                 const data = await response.json();
-                alert(`Poll created successfully with ID: ${data.pollId}. Now refresh the page to vote.`);
+                alert(`Poll created successfully with ID: ${data.response.id}`);
+                setPollQuestion(''); // Reset form fields
+                setPollOptions([{ content: '' }]); // Reset options
+                setValidTo(''); // Reset date
             } else {
                 console.error('Error creating poll:', response.statusText);
                 alert('Failed to create poll');
@@ -60,6 +73,18 @@ function CreatePollComponent() {
                         value={pollQuestion}
                         onChange={(e) => setPollQuestion(e.target.value)}
                         placeholder="Enter poll question.."
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="validTo">Expiration Date:</label>
+                    <input
+                        type="date"
+                        id="validTo"
+                        value={validTo}
+                        onChange={(e) => setValidTo(e.target.value)}
+                        required
                     />
                 </div>
 
@@ -69,14 +94,15 @@ function CreatePollComponent() {
                         <div key={index} className="option-item">
                             <input
                                 type="text"
-                                value={option.caption}
+                                value={option.content}
                                 onChange={(e) => {
                                     const newOptions = [...pollOptions];
-                                    newOptions[index].caption = e.target.value;
+                                    newOptions[index].content = e.target.value;
                                     setPollOptions(newOptions);
                                 }}
                                 placeholder={`Option ${index + 1}`}
                                 className="option-input"
+                                required
                             />
                             {pollOptions.length > 1 && (
                                 <button type="button" className="remove-btn" onClick={() => removeOption(index)}>
