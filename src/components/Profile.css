@@ -40,3 +40,34 @@ select {
     background-color: #f69eca;
     color: white;
 }
+
+.edit-poll-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-poll-form .form-group {
+    margin-bottom: 15px;
+}
+
+.edit-poll-form input[type="text"], .edit-poll-form input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.update-btn, .delete-btn {
+    background-color: #f69eca;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+

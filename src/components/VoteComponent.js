@@ -19,7 +19,6 @@ function VoteComponent() {
             return;
         }
 
-
         try {
             const response = await fetch('http://localhost:8000/api/v1/polls', {
                 method: 'GET',
@@ -47,12 +46,12 @@ function VoteComponent() {
                 method: 'GET',
                 headers: {
                     'X-Apikey': API_KEY,
-                    'Authorization': `Bearer ${token}`, // Only logged is users can vote
+                    'Authorization': `Bearer ${token}`, // Only logged in users can vote
                 }
             });
             if (response.ok) {
                 const pollData = await response.json();
-                setSelectedPoll(pollData.response); //
+                setSelectedPoll(pollData.response);
             } else {
                 console.error('Failed to fetch poll:', response.statusText);
             }
@@ -73,7 +72,7 @@ function VoteComponent() {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Apikey': API_KEY,
-                    'Authorization': `Bearer ${token}`, // Only logged in uses can vote
+                    'Authorization': `Bearer ${token}`, // Only logged in users can vote
                 },
                 body: JSON.stringify(voteData)
             });
@@ -84,6 +83,14 @@ function VoteComponent() {
                 // Optionally, refresh the poll details to show updated vote counts
                 fetchSelectedPoll(selectedPollId);
             } else {
+                // Check for the "User already voted in this poll" error
+                const errorResponse = await response.json();
+                if (errorResponse.validation_errors) {
+                    const voteError = errorResponse.validation_errors.find(error => error.message === "User already voted in this poll.");
+                    if (voteError) {
+                        alert("User already voted in this poll.");
+                    }
+                }
                 console.error('Failed to cast vote:', response.statusText);
             }
         } catch (error) {
@@ -92,7 +99,7 @@ function VoteComponent() {
     };
 
     return (
-        <div>
+        <div className="vote-container">
             <h2>Select a Poll</h2>
             <div>
                 <label htmlFor="pollSelect">Choose a poll:</label>
@@ -114,15 +121,15 @@ function VoteComponent() {
             {selectedPoll && (
                 <>
                     <h3>Poll: {selectedPoll.question}</h3>
-                    <ul>
+                    <div className="options-container">
                         {selectedPoll.vote_options.map((option) => (
-                            <li key={option.id}>
-                                {option.content}
-                                <button onClick={() => upvote(option.id)}>Vote</button>
+                            <div key={option.id} className="option-item">
+                                <span className="option">{option.content}</span>
+                                <button className="upvote" onClick={() => upvote(option.id)}>Vote</button>
                                 <span>{option.votes_count} Votes</span>
-                            </li>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </>
             )}
         </div>

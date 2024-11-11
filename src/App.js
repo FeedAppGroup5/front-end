@@ -55,7 +55,7 @@ function App() {
 
             {renderComponent()}
 
-            <Footer footerText="Copyright © 2024 - Mikael Færøvik / Carla Miquel Blasco / Phillip Brat" />
+            {/* <Footer footerText="Copyright © 2024 - Mikael Færøvik / Carla Miquel Blasco / Phillip Brat" /> */}
         </div>
     );
 }
