@@ -3,7 +3,6 @@ import CreatePollComponent from './components/CreatePollComponent';
 import VoteComponent from './components/VoteComponent';  // Import the VoteComponent
 import './App.css';
 import Header from './components/Header';
-import Footer from './components/Footer';
 import Tabs from './components/Tabs';
 import AuthForm from './components/AuthForm';
 import Profile from './components/Profile';
@@ -49,13 +48,20 @@ function App() {
 
     return (
         <div className="App">
-            <Header headerText="Welcome to the Poll App" />
+            <Header headerText="Welcome to the Poll App"/>
 
-            <Tabs items={items} activeItem={activeItem} onTabChange={handleTabChange} />
+            <Tabs items={items} activeItem={activeItem} onTabChange={handleTabChange}/>
 
-            {renderComponent()}
+            {/* Wrap main content in a div with class "content" */}
+            <div className="content">
+                {renderComponent()}
+            </div>
+            <footer>
+                <div className="copyright">
+                    Copyright © 2024 - Mikael Færøvik / Carla Miquel Blasco / Phillip Brat
+                </div>
+            </footer>
 
-            {/* <Footer footerText="Copyright © 2024 - Mikael Færøvik / Carla Miquel Blasco / Phillip Brat" /> */}
         </div>
     );
 }

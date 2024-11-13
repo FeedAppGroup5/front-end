@@ -6,16 +6,16 @@
 ul{
     display: flex;
     justify-content: center;
-    padding: 0;
-    list-style-type: none;
 }
 li{
-    margin: 0 10px;
-    font-size: 20px;
+    margin: 0 20px;
+    font-size:25px;
     color: grey;
     cursor: pointer;
+    padding: 10px;
     background:  #fdeff5;
-    border: 2px solid #f69eca;
+    border: 1px solid #f69eca;
+    border-radius: 8px;
     max-width: 80px;
 }
 .active{

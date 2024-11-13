@@ -58,7 +58,7 @@ input[type="text"] {
 
 .option-input {
     flex-grow: 1;
-    margin-right: 10px;
+    margin-right: 20px;
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
@@ -70,9 +70,11 @@ button {
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    margin-top: 5px;
 }
 
 .add-btn, .create-btn {
     background-color: #f69eca;
     color: white;
+    margin: 10px;
 }

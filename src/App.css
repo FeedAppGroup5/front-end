@@ -40,3 +40,27 @@
     transform: rotate(360deg);
   }
 }
+
+/* Content area takes up available space */
+.content {
+  flex: 1;
+  padding-bottom: 20px; /* Additional padding between content and footer */
+}
+
+/* Footer styling to align at the bottom */
+.footer {
+  padding-top: 30px;
+  padding-bottom: 20px;
+  text-align: center;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.copyright {
+  color: #aaa;
+  font-size: 14px;
+  display: inline-block;
+  padding: 20px;
+  border-top: 1px solid #ddd;
+}
